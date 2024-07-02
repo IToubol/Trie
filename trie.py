@@ -24,9 +24,9 @@ class _Node:
         return bool(self.extensions)
     
     def leaf(self, key:str) -> _Node:
-        if self.is_leaf():
+        if self.is_leaf() or not key:
             return self
-        return self.extensions[key[0]].get_leaf(key[1:])
+        return self.extensions[key[0]].leaf(key[1:])
 
     def contained_part_split(self, key:str, index:int=1) -> tuple[str, str]:
         if not self.contains(key[:index]):
@@ -48,3 +48,24 @@ class Trie:
         if not self.head.contains(key):
             contained_part, new_part = self.head.contained_part_split(key)
             self.head.leaf(contained_part).extend(new_part)
+
+    def display(self) -> None:
+        if self.head.is_leaf():
+            print(self.head.value + "\n")
+        else:
+            for node in self.extensions:
+                self.display(node)
+
+
+
+
+if __name__ == "__main__":
+    trie = Trie()
+
+    for key in ["à", "arbre", "art", "artiste", "chape", "chapeau", "créatif", "création", "œuf", "zèbre"]:
+        trie.add(key)
+    
+    print(f"L'arbre trie contient le mot 'arbre': {trie.contains("arbre")}")
+    print(f"L'arbre trie contient le mot 'bonjour': {trie.contains("bonjour")}")
+    
+    trie.display()
