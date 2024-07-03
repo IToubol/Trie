@@ -6,10 +6,9 @@ class _Node:
         self.extensions = {}
     
     def extend(self, key:str) -> None:
-        next_node = _Node(key[0])
-        self.extensions[key[0]] = next_node
+        self.extensions[key[0]] = _Node(key[0])
         if len(key) > 1:
-            next_node.extend(key[1:])
+            self.extensions[key[0]].extend(key[1:])
 
     def contains(self, key:str) -> bool:
         if key[0] == self.value:
@@ -33,7 +32,7 @@ class _Node:
 
 class Trie:
     def __init__(self) -> None:
-        self.head = {"": _Node("")}
+        self.head = {}
 
     def contains(self, key:str) -> bool:
         if key[0] in self.head:
@@ -46,10 +45,9 @@ class Trie:
                 contained_part, new_part = self.head[key[0]].contained_part_split(key)
                 self.head[key[0]].leaf(contained_part).extend(new_part)
             else:
-                node = _Node(key[0])
-                self.head[key[0]] = node
+                self.head[key[0]] = _Node(key[0])
                 if len(key) > 1:
-                    node.extend(key[1:])
+                    self.head[key[0]].extend(key[1:])
             
 
 # ==================================================== #
