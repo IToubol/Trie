@@ -20,9 +20,6 @@ class _Node:
             return True
         return False
     
-    def is_leaf(self) -> bool:
-        return not bool(self.extensions)
-    
     def leaf(self, key:str) -> _Node:
         if len(key) == 1:
             return self
