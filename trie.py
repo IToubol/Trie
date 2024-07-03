@@ -1,28 +1,31 @@
-from __future__ import annotations
+from typing import TypeVar
+
+TNode = TypeVar("TNode", bound="_Node")
+
 
 class _Node:
     def __init__(self, value:str) -> None:
         self.value = value
-        self.extensions = {}
+        self.branches = {}
     
     def extend(self, key:str) -> None:
-        self.extensions[key[0]] = _Node(key[0])
+        self.branches[key[0]] = _Node(key[0])
         if len(key) > 1:
-            self.extensions[key[0]].extend(key[1:])
+            self.branches[key[0]].extend(key[1:])
 
     def contains(self, key:str) -> bool:
         if key[0] == self.value:
             if len(key) > 1:
-                if key[1] in self.extensions:
-                    return self.extensions[key[1]].contains(key[1:])
+                if key[1] in self.branches:
+                    return self.branches[key[1]].contains(key[1:])
                 return False
             return True
         return False
     
-    def leaf(self, key:str) -> _Node:
+    def leaf(self, key:str) -> TNode:
         if len(key) == 1:
             return self
-        return self.extensions[key[1]].leaf(key[1:])
+        return self.branches[key[1]].leaf(key[1:])
 
     def contained_part_split(self, key:str, index:int=1) -> tuple[str, str]:
         if not self.contains(key[:index]):
