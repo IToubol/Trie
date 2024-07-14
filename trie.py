@@ -23,10 +23,10 @@ class Trie:
     def contains(self, key:str) -> bool:
         return Trie._found_in(self.head, key)
     
-    def _contained_part_split(self, key:str, index:int=1) -> tuple[str, str]:
-        if not self.contains(key[:index]):
+    def _contained_part_split(node: _Node, key:str, index:int=1) -> tuple[str, str]:
+        if not Trie._found_in(node, key[:index]):
             return key[:index-1], key[index-1:]
-        return self._contained_part_split(key, index + 1)
+        return Trie._contained_part_split(node, key, index + 1)
     
     def _add_key_to(node:_Node, key:str) -> None:
         node.branches[key[0]] = _Node(key[0], len(key)==1)
@@ -42,7 +42,7 @@ class Trie:
 
     def add(self, key:str) -> None:
         if not self.contains(key):
-            contained, new_part = self._contained_part_split(key)
+            contained, new_part = Trie._contained_part_split(self.head, key)
             return Trie._add_key_to(Trie._end_of_branch(self.head, contained), new_part)
     
     def _displaying(node:_Node, genealogy="", remaining_brothers_nb=0, word="") -> str:
