@@ -42,6 +42,15 @@ class Trie:
         if not self.contains(key):
             contained, new_part = self._contained_part_split(key)
             return Trie._add_key_to(Trie._get_node(self.head, contained), new_part)
+    
+    def _node_str(node:_Node, genealogy="", brothers_nb=0, word="") -> str:
+        next_genealogy = f"{genealogy}{"|  " if brothers_nb else "   "}"
+        if_node_is_leaf  = f" *[{word}{node.value}]\n{next_genealogy + ("|" if node.branches else "")}" if node.is_leaf else ""
+        brothers_nb = len(node.branches)-1
+        return f"{genealogy}{node.string}{if_node_is_leaf}\n{"".join(Trie._node_str(node.branches[key], next_genealogy, brothers_nb-i, word+node.value) for i, key in enumerate(node.branches))}"
+
+    def __str__(self) -> str:
+        return Trie._node_str(self.head)
             
 
 
@@ -65,15 +74,8 @@ if __name__ == "__main__":
         "œuf",
         "zèbre"
     ]
-    others_keys = ["Bonjour", "Aurevoir", "Pomme"]
 
     for key in to_add_keys_list:
         trie.add(key)
 
-    for key in to_add_keys_list + others_keys:
-        print(f"L'arbre (trie) contient le mot {key}: {trie.contains(key)}")
-
-    def display_node(node:_Node, rank=0) -> str:
-        return "\n" + "   " * rank + node.string + ("" if node.is_leaf else "".join(display_node(node.branches[key], rank+1) for key in node.branches))
-    
-    print("".join(display_node(trie.head.branches[key]) for key in trie.head.branches))
+    print(trie)
