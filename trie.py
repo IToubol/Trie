@@ -4,7 +4,9 @@ class _Node:
         self.value = value
         self.is_leaf = is_leaf
         self.branches = {}
-        self.string = f"|__{value}"
+
+    def __str__(self) -> str:
+        return f"|__{self.value}"
 
 
 class Trie:
@@ -31,26 +33,26 @@ class Trie:
         if len(key) > 1:
             Trie._add_key_to(node.branches[key[0]], key[1:])
     
-    def _get_node(node:_Node, branch:str) -> _Node:
+    def _end_of_branch(node:_Node, branch:str) -> _Node:
         if not branch:
             return node
         if len(branch) == 1:
             return node.branches[branch]
-        return Trie._get_node(node.branches[branch[0]], branch[1:])
+        return Trie._end_of_branch(node.branches[branch[0]], branch[1:])
 
     def add(self, key:str) -> None:
         if not self.contains(key):
             contained, new_part = self._contained_part_split(key)
-            return Trie._add_key_to(Trie._get_node(self.head, contained), new_part)
+            return Trie._add_key_to(Trie._end_of_branch(self.head, contained), new_part)
     
-    def _node_str(node:_Node, genealogy="", brothers_nb=0, word="") -> str:
-        next_genealogy = f"{genealogy}{"|  " if brothers_nb else "   "}"
-        if_node_is_leaf  = f" *[{word}{node.value}]\n{next_genealogy + ("|" if node.branches else "")}" if node.is_leaf else ""
-        brothers_nb = len(node.branches)-1
-        return f"{genealogy}{node.string}{if_node_is_leaf}\n{"".join(Trie._node_str(node.branches[key], next_genealogy, brothers_nb-i, word+node.value) for i, key in enumerate(node.branches))}"
+    def _displaying(node:_Node, genealogy="", remaining_brothers_nb=0, word="") -> str:
+        next_genealogy = f"{genealogy}{"|  " if remaining_brothers_nb else "   "}"
+        leaf_part  = f" *[{word}{node.value}]\n{next_genealogy + ("|" if node.branches else "")}" if node.is_leaf else ""
+        sons_nb = len(node.branches)-1
+        return f"{genealogy}{node.__str__()}{leaf_part}\n{"".join(Trie._displaying(node.branches[key], next_genealogy, sons_nb-i, word+node.value) for i, key in enumerate(node.branches))}"
 
     def __str__(self) -> str:
-        return Trie._node_str(self.head)
+        return Trie._displaying(self.head)
             
 
 
@@ -59,18 +61,18 @@ class Trie:
 # ==================================================== #
 if __name__ == "__main__":
     # t1, t2 = Trie(), Trie()
-    # print(f"{id(Trie._get_node) =}")
-    # print(f"{id(t1.add) = }\n{id(t1._get_node) = }\n{id(t1.head) = }\n")
-    # print(f"{id(t2.add) = }\n{id(t2._get_node) = }\n{id(t2.head) = }")
+    # print(f"{id(Trie._end_of_branch) =}")
+    # print(f"{id(t1.add) = }\n{id(t1._end_of_branch) = }\n{id(t1.head) = }\n")
+    # print(f"{id(t2.add) = }\n{id(t2._end_of_branch) = }\n{id(t2.head) = }")
 
     trie = Trie()
 
     to_add_keys_list = [
         "à",
-        "arbre",
+        "arbre", "arbuste", "arbustes",
         "art", "artiste",
-        "chape", "chapeau",
-        "créatif", "création",
+        "chape", "chapeau", "chapelle",
+        "créatif", "création", "créance", "créancier",
         "œuf",
         "zèbre"
     ]
