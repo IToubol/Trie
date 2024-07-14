@@ -68,7 +68,8 @@ if __name__ == "__main__":
         "à",
         "arbre", "arbuste", "arbustes",
         "art", "artiste",
-        "chape", "chapeau", "chapelle",
+        "chape", "chapeau", "chaperon",
+        "chaud", "chaude", "chauds", "chaudes", "chaudement",
         "créatif", "création", "créance", "créancier",
         "œuf",
         "zèbre"
