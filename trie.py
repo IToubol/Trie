@@ -20,7 +20,7 @@ class Trie:
     def contains(self, key:str) -> bool:
         return Trie._found_in(self.head, key)
     
-    def _contained_part_split(node: _Node, key:str, index:int=1) -> tuple[str, str]:
+    def _contained_part_split(node:_Node, key:str, index:int=1) -> tuple[str, str]:
         if not Trie._found_in(node, key[:index]):
             return key[:index-1], key[index-1:]
         return Trie._contained_part_split(node, key, index + 1)
@@ -46,7 +46,7 @@ class Trie:
         next_genealogy = f"{genealogy}{"|  " if remaining_brothers_nb else "   "}"
         leaf_part  = f" *[{word}{node.value}]\n{next_genealogy + ("|" if node.branches else "")}" if node.is_leaf else ""
         sons_nb = len(node.branches)-1
-        return f"{genealogy}|__{node.value}{leaf_part}\n{"".join(Trie._displaying(node.branches[key], next_genealogy, sons_nb-i, word+node.value) for i, key in enumerate(node.branches))}"
+        return f"{genealogy}|__{node.value}{leaf_part}\n{"".join(Trie._displaying(node.branches[key], next_genealogy, sons_nb-n, word+node.value) for n, key in enumerate(node.branches))}"
 
     def __str__(self) -> str:
         return Trie._displaying(self.head)
