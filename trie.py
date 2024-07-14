@@ -5,9 +5,6 @@ class _Node:
         self.is_leaf = is_leaf
         self.branches = {}
 
-    def __str__(self) -> str:
-        return f"|__{self.value}"
-
 
 class Trie:
     def __init__(self) -> None:
@@ -49,7 +46,7 @@ class Trie:
         next_genealogy = f"{genealogy}{"|  " if remaining_brothers_nb else "   "}"
         leaf_part  = f" *[{word}{node.value}]\n{next_genealogy + ("|" if node.branches else "")}" if node.is_leaf else ""
         sons_nb = len(node.branches)-1
-        return f"{genealogy}{node.__str__()}{leaf_part}\n{"".join(Trie._displaying(node.branches[key], next_genealogy, sons_nb-i, word+node.value) for i, key in enumerate(node.branches))}"
+        return f"{genealogy}|__{node.value}{leaf_part}\n{"".join(Trie._displaying(node.branches[key], next_genealogy, sons_nb-i, word+node.value) for i, key in enumerate(node.branches))}"
 
     def __str__(self) -> str:
         return Trie._displaying(self.head)
