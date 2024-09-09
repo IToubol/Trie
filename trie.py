@@ -32,8 +32,8 @@ class Trie:
 
     @staticmethod
     def _add_key_to(node:TNode, key:str) -> None:
-        node.branches[key[0]] = _Node(key[0], len(key)==1)
-        if len(key) > 1:
+        node.branches[key[0]] = _Node(key[0], (is_leaf := len(key)==1))
+        if not is_leaf:
             Trie._add_key_to(node.branches[key[0]], key[1:])
 
     @staticmethod
@@ -50,24 +50,26 @@ class Trie:
             return Trie._add_key_to(Trie._end_of_branch(self.head, contained), new_part)
 
     @staticmethod
-    def _displaying(node:TNode, genealogy="", remaining_brothers_nb=0, word="") -> str:
+    def _displaying(node:TNode, genealogy="", word="", remaining_siblings_nb=0) -> str:
         """
-        recursive function to display the entire content of the tree
+        Generates a textual representation of a node and its descendants in a trie (prefix tree).
 
-        args
-            node               (TNode) : a _Node object representing the current character of the tree.
-            genealogy            (str) : a string representing the `branchs` of the next characters
-            remainig_brothers_nb (int) : the number of branchs from the same node.
-            word                 (str) : the retrived part of the current word
-        
-        return
-            str : the entire string of characters representing the tree.
+        This recursive function builds a string representing the tree structure
+        from the given node, using ASCII characters to visualize parent-child
+        relationships and branches.
+
+        Args:
+            node (TNode): The current node to display.
+            genealogy (str, optional): The string representing the "genealogy" of the current node. Defaults to "".
+            word (str, optional): The accumulated prefix up to the current node. Defaults to "".
+            remaining_brothers_nb (int, optional): The number of remaining siblings of the current node. Defaults to 0.
+        Returns:
+            str: A string representing the tree structure from the given node.
         """
-        next_genealogy = f"{genealogy}{"|  " if remaining_brothers_nb else "   " if node.value else ""}"
+        next_genealogy = f"{genealogy}{"|  " if remaining_siblings_nb else "   " if node.value else ""}"
         leaf_part  = f" *[{word}{node.value}]" if node.is_leaf else ""
         sons_nb = len(node.branches)-1
-
-        return f"{genealogy}|{"__" if node.value else ""}{node.value}{leaf_part}\n{"".join(Trie._displaying(node.branches[key], next_genealogy, sons_nb-n, word+node.value) for n, key in enumerate(node.branches))}"
+        return f"{genealogy}|{"__" if node.value else ""}{node.value}{leaf_part}\n{"".join(Trie._displaying(node.branches[key], next_genealogy, word+node.value, sons_nb-n) for n, key in enumerate(node.branches))}"
 
     def __str__(self) -> str:
         return Trie._displaying(self.head)
@@ -84,6 +86,7 @@ if __name__ == "__main__":
     # print(f"{id(t2.add) = }\n{id(t2._end_of_branch) = }\n{id(t2.head) = }")
 
     to_add_keys_list = [
+        "carotte",
         "à",
         "arbre", "arbuste", "arbustes",
         "art", "artiste",
@@ -91,7 +94,7 @@ if __name__ == "__main__":
         "chaud", "chaude", "chauds", "chaudes", "chaudement",
         "créatif", "création", "créance", "créancier",
         "œuf",
-        "zèbre", "carotte"
+        "zèbre",
     ]
 
     trie = Trie()
