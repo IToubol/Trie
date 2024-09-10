@@ -21,8 +21,8 @@ class Trie:
             return True
         return False
 
-    def contains(self, key:str) -> bool:
-        return Trie._found_in(self.head, key)
+    # def __contains__(self, key:str) -> bool:
+    #     return Trie._found_in(self.head, key)
 
     @staticmethod    
     def _contained_part_split(node:TNode, key:str, index:int=1) -> tuple[str, str]:
@@ -38,7 +38,7 @@ class Trie:
 
     @staticmethod
     def _end_of_branch(node:TNode, branch:str) -> TNode:
-        if not branch:
+        if not branch: # needed verification for the case where `contained` in add method is empty
             return node
         if len(branch) == 1:
             return node.branches[branch]
@@ -50,7 +50,7 @@ class Trie:
             return Trie._add_key_to(Trie._end_of_branch(self.head, contained), new_part)
 
     @staticmethod
-    def _displaying(node:TNode, genealogy="", word="", remaining_siblings_nb=0) -> str:
+    def _displaying(node:TNode, genealogy="", accumulated="", remaining_siblings_nb=0) -> str:
         """
         Generates a textual representation of a node and its descendants in a trie (prefix tree).
 
@@ -66,10 +66,10 @@ class Trie:
         Returns:
             str: A string representing the tree structure from the given node.
         """
-        next_genealogy = f"{genealogy}{"|  " if remaining_siblings_nb else "   " if node.value else ""}"
-        leaf_part  = f" *[{word}{node.value}]" if node.is_leaf else ""
+        next_cumul = accumulated + node.value
+        next_line_genealogy = f"{genealogy}{"|  " if remaining_siblings_nb else "   " if node.value else ""}"
         sons_nb = len(node.branches)-1
-        return f"{genealogy}|{"__" if node.value else ""}{node.value}{leaf_part}\n{"".join(Trie._displaying(node.branches[key], next_genealogy, word+node.value, sons_nb-n) for n, key in enumerate(node.branches))}"
+        return f"{genealogy}|{("__" + node.value) if node.value else ""}{(" *[" + next_cumul + "]") if node.is_leaf else ""}\n{"".join(Trie._displaying(node.branches[key], next_line_genealogy, next_cumul, sons_nb-n) for n, key in enumerate(node.branches))}"
 
     def __str__(self) -> str:
         return Trie._displaying(self.head)
