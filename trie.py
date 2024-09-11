@@ -63,14 +63,21 @@ class Trie:
 #                       TESTS                          #
 # ==================================================== #
 if __name__ == "__main__":
-    trie = Trie()
 
     to_add_keys_list = [
-        "à", "arbre", "art", "artiste",
-        "chape", "chapeau", "créatif",
-        "création", "œuf", "zèbre"
+        "carotte",
+        "à",
+        "arbre", "arbuste", "arbustes",
+        "art", "artiste",
+        "chape", "chapeau", "pomme", "chaperon",
+        "chaud", "chaude", "chauds", "chaudes", "chaudement",
+        "créatif", "création", "créance", "créancier",
+        "œuf",
+        "zèbre",
     ]
+
+    trie = Trie()
     for key in to_add_keys_list:
         trie.extend(key)
-
+    
     print(trie)
