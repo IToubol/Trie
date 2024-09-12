@@ -1,4 +1,4 @@
-from typing import TypeVar, NoReturn
+from typing import TypeVar, NoReturn, Generator
 
 TNode = TypeVar("TNode", bound="Trie")
 
@@ -49,18 +49,20 @@ class Trie:
             self.parent.branches.remove(self)
             self.parent.remove_key()
 
-    # def _get_completions(self, key:str) -> list:
-    #     completion_list = []
-    #     node = self[key]
+    def completions(self) -> Generator:
+        for node in self.branches:
+            if node.is_leaf:
+                yield node.value
+            yield from (node.value + value for value in node.completions())
                 
 
     def __str__(self, genealogy:str="", accumulated:str="", remaining_siblings_nb:int=0) -> str:
         """
         Generates a textual representation of a node and its descendants in a trie (prefix tree).
 
-        This recursive function builds a string representing the tree structure
-        from the given node, using ASCII characters to visualize parent-child
-        relationships and branches.
+        This recursive function builds a string
+        representing the tree structure of the all trie content,
+        to visualize parent-child relationships and branches.
 
         Args:
             node (TNode): The current node to display.
@@ -94,19 +96,22 @@ if __name__ == "__main__":
     ]
 
     trie = Trie()
+
     for key in to_add_keys_list:
         trie.extend(key)
-    
 
-    print(trie)
+    # print(trie)
 
-    trie.remove_key("pomme")
-    trie.remove_key("cha")
+    # trie.remove_key("pomme")
+    # trie.remove_key("cha")
     trie.remove_key("chape")
-    trie.remove_key("chaudement")
+    # trie.remove_key("chaudement")
 
-    print(trie)
+    # print(trie)
 
-    trie.extend("chape")
+    # trie.extend("chape")
     
-    print(trie)
+    # print(trie)
+
+    for completion in trie["ch"].completions():
+        print("ch" + completion)
