@@ -38,6 +38,8 @@ class Trie:
                 new_node.extend(key[1:])
             else:
                 new_node.is_leaf = True
+        else:
+            self.is_leaf = True
 
     def remove_key(self, key:str|None=None) -> None:
         if key:
@@ -106,13 +108,14 @@ if __name__ == "__main__":
     trie.remove_key("chape")
     # trie.remove_key("chaudement")
 
-    # print(trie)
-
-    trie.extend("chape")
-    
-    # print(trie)
-
     for completion in trie["ch"].completions():
         print("ch" + completion)
-    
+
+    trie.extend("chape")
+
+    print()
+    for completion in trie["ch"].completions():
+        print("ch" + completion)
+
+    print()
     print("Avion" in trie, "chaud" in trie, "cha" in trie)
