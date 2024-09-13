@@ -28,16 +28,16 @@ class Trie:
     def extend(self, key:str) -> None:
         if not self.parent: # Modifie la valeur de l'attribut is_leaf du noeud racine
             self.is_leaf = False
+        if key: 
+            for node in self.branches:
+                if node.value == key[0]:
+                    return node.extend(key[1:])
 
-        for node in self.branches:
-            if node.value == key[0]:
-                return node.extend(key[1:])
-
-        new_node = Trie(key[0], self)
-        self.branches.add(new_node)
-        if len(key) > 1:
-            new_node.is_leaf = False 
-            new_node.extend(key[1:])
+            new_node = Trie(key[0], self)
+            self.branches.add(new_node)
+            if len(key) > 1:
+                new_node.is_leaf = False 
+                new_node.extend(key[1:])
 
     def remove_key(self, key:str|None=None) -> None:
         if key:
@@ -108,7 +108,7 @@ if __name__ == "__main__":
 
     # print(trie)
 
-    # trie.extend("chape")
+    trie.extend("chape")
     
     # print(trie)
 
