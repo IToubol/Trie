@@ -26,13 +26,17 @@ class Trie:
         return False
 
     def extend(self, key:str) -> None:
-        if key:
-            for node in self.branches:
-                if node.value == key[0]:
-                    return node.extend(key[1:])
-            new_node = Trie(key[0], self)
-            new_node.is_leaf = len(key) == 1
-            self.branches.add(new_node)
+        if not self.parent: # Modifie la valeur de l'attribut is_leaf du noeud racine
+            self.is_leaf = False
+
+        for node in self.branches:
+            if node.value == key[0]:
+                return node.extend(key[1:])
+
+        new_node = Trie(key[0], self)
+        self.branches.add(new_node)
+        if len(key) > 1:
+            new_node.is_leaf = False 
             new_node.extend(key[1:])
 
     def remove_key(self, key:str|None=None) -> None:
