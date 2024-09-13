@@ -7,32 +7,21 @@ class Trie:
         self.value    = value
         self.is_leaf  = False
         self.parent   = parent
-        self.branches = set()
+        self.branches = {}
 
     def __getitem__(self, key:str) -> TNode|NoReturn:
-        if key:
-            for node in self.branches:
-                if node.value == key[0]:
-                    return node[key[1:]]
-            raise KeyError(f"Key {key} not found ")
-        return self
+        return self.branches[key[0]][key[1:]] if key else self
 
     def __contains__(self, key:str) -> bool:
-        for node in self.branches:
-            if node.value == key[0]:
-                if len(key) == 1:
-                    return True
-                return key[1:] in node
-        return False
+        return (char := key[0]) in self.branches and ((len(key) == 1) or key[1:] in self.branches[char])
 
     def extend(self, key:str) -> None:
-        if key: 
-            for node in self.branches:
-                if node.value == key[0]:
-                    return node.extend(key[1:])
+        if key:
+            if (char := key[0]) in self:
+                return self[char].extend(key[1:])
 
-            new_node = Trie(key[0], self)
-            self.branches.add(new_node)
+            new_node = Trie(char, self)
+            self.branches[char] = new_node
             if len(key) > 1:
                 new_node.extend(key[1:])
             else:
@@ -47,11 +36,11 @@ class Trie:
         elif self.branches:
             self.is_leaf = False
         elif self.parent:
-            self.parent.branches.remove(self)
+            del self.parent.branches[self]
             self.parent.remove_key()
 
     def completions(self) -> Generator:
-        for node in self.branches:
+        for node in self.branches.values():
             if node.is_leaf:
                 yield node.value
             yield from (node.value + value for value in node.completions())
@@ -76,7 +65,7 @@ class Trie:
         next_cumul = accumulated + self.value
         next_line_genealogy = f"{genealogy}{"|  " if remaining_siblings_nb else "   " if self.value else ""}"
         sons_nb = len(self.branches)-1
-        return f"{genealogy}|{("__" + self.value) if self.value else ""}{(" *[" + next_cumul + "]") if self.is_leaf else ""}\n{"".join(node.__str__(next_line_genealogy, next_cumul, sons_nb-n) for n, node in enumerate(self.branches))}"
+        return f"{genealogy}|{("__" + self.value) if self.value else ""}{(" *[" + next_cumul + "]") if self.is_leaf else ""}\n{"".join(node.__str__(next_line_genealogy, next_cumul, sons_nb-n) for n, node in enumerate(self.branches.values()))}"
 
 
 # ==================================================== #
