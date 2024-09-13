@@ -29,13 +29,11 @@ class Trie:
         if key:
             for node in self.branches:
                 if node.value == key[0]:
-                    node.extend(key[1:])
-                    break
-            else:
-                new_node = Trie(key[0], self)
-                new_node.is_leaf = len(key) == 1
-                self.branches.add(new_node)
-                new_node.extend(key[1:])
+                    return node.extend(key[1:])
+            new_node = Trie(key[0], self)
+            new_node.is_leaf = len(key) == 1
+            self.branches.add(new_node)
+            new_node.extend(key[1:])
 
     def remove_key(self, key:str|None=None) -> None:
         if key:
