@@ -114,3 +114,5 @@ if __name__ == "__main__":
 
     for completion in trie["ch"].completions():
         print("ch" + completion)
+    
+    print("Avion" in trie, "chaud" in trie, "cha" in trie)
