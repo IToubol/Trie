@@ -1,4 +1,4 @@
-from typing import TypeVar, NoReturn, Generator
+from typing import Generator, NoReturn, TypeVar
 
 TNode = TypeVar("TNode", bound="Trie")
 
@@ -25,20 +25,17 @@ class Trie:
                 return key[1:] in node
         return False
 
-    def _present_absent_split(self, key:str, index:int=1) -> tuple[str, str]:
-        if index <= len(key) and key[:index] in self:
-            return self._present_absent_split(key, index + 1)            
-        return key[:index-1], key[index-1:]
-
     def extend(self, key:str) -> None:
-        present, absent = self._present_absent_split(key)
-        if absent:
-            self.is_leaf = False
-            new_node = Trie(absent[0], self[present])
-            self[present].branches.add(new_node)
-            new_node.extend(absent[1:])
-        else:
-            self[present].is_leaf = True
+        if key:
+            for node in self.branches:
+                if node.value == key[0]:
+                    node.extend(key[1:])
+                    break
+            else:
+                new_node = Trie(key[0], self)
+                new_node.is_leaf = len(key) == 1
+                self.branches.add(new_node)
+                new_node.extend(key[1:])
 
     def remove_key(self, key:str|None=None) -> None:
         if key:
@@ -100,7 +97,7 @@ if __name__ == "__main__":
     for key in to_add_keys_list:
         trie.extend(key)
 
-    # print(trie)
+    print(trie)
 
     # trie.remove_key("pomme")
     # trie.remove_key("cha")
