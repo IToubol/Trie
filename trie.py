@@ -5,7 +5,7 @@ TNode = TypeVar("TNode", bound="Trie")
 class Trie:
     def __init__(self, value:str="", parent:TNode|None=None) -> None:
         self.value    = value
-        self.is_leaf  = True
+        self.is_leaf  = False
         self.parent   = parent
         self.branches = set()
 
@@ -26,8 +26,6 @@ class Trie:
         return False
 
     def extend(self, key:str) -> None:
-        if not self.parent: # Modifie la valeur de l'attribut is_leaf du noeud racine
-            self.is_leaf = False
         if key: 
             for node in self.branches:
                 if node.value == key[0]:
@@ -36,8 +34,9 @@ class Trie:
             new_node = Trie(key[0], self)
             self.branches.add(new_node)
             if len(key) > 1:
-                new_node.is_leaf = False 
                 new_node.extend(key[1:])
+            else:
+                new_node.is_leaf = True
 
     def remove_key(self, key:str|None=None) -> None:
         if key:
@@ -74,7 +73,7 @@ class Trie:
         next_cumul = accumulated + self.value
         next_line_genealogy = f"{genealogy}{"|  " if remaining_siblings_nb else "   " if self.value else ""}"
         sons_nb = len(self.branches)-1
-        return f"{genealogy}|{("__" + self.value) if self.value else ""}{(" *[" + next_cumul + "]") if (self.value and self.is_leaf) else ""}\n{"".join(node.__str__(next_line_genealogy, next_cumul, sons_nb-n) for n, node in enumerate(self.branches))}"
+        return f"{genealogy}|{("__" + self.value) if self.value else ""}{(" *[" + next_cumul + "]") if self.is_leaf else ""}\n{"".join(node.__str__(next_line_genealogy, next_cumul, sons_nb-n) for n, node in enumerate(self.branches))}"
 
 
 # ==================================================== #
