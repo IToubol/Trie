@@ -33,11 +33,11 @@ class Trie:
 
             new_node = Trie(key[0], self)
             self.branches.add(new_node)
-
             if len(key) > 1:
                 new_node.extend(key[1:])
             else:
                 new_node.is_leaf = True
+
         else:
             self.is_leaf = True
 
