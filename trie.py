@@ -15,6 +15,12 @@ class Trie:
     def __contains__(self, key:str) -> bool:
         return (char := key[0]) in self.branches and ((len(key) == 1) or key[1:] in self.branches[char])
 
+    # def search(self, key: str) -> bool:
+    #     return self.starts_with(char := key[0]) and ((len(key) > 1 and self[char].search(key[1:])) or (len(key) == 1 and self[key].is_leaf))
+
+    # def starts_with(self, key: str) -> bool:
+    #     return (char := key[0]) in self.branches and (len(key) == 1 or self[char].starts_with(key[1:]))
+
     def extend(self, key:str) -> None:
         if key:
             if (char := key[0]) in self:
@@ -107,4 +113,4 @@ if __name__ == "__main__":
         print("ch" + completion)
 
     print()
-    print("Avion" in trie, "chaud" in trie, "cha" in trie)
+    print("Avion" in trie, "chaud" in trie, "cha" in trie, "chalumeau" in trie, "pommes" in trie)
