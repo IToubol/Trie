@@ -70,7 +70,11 @@ class Trie:
         """
         next_cumul = accumulated + self.value
         next_line_genealogy = f"{genealogy}{"|  " if remaining_siblings_nb else "   " if self.value else ""}"
-        return f"{genealogy}|{("__" + self.value) if self.value else ""}{(" *[" + next_cumul + "]" + ("" if self.branches else ("\n" + next_line_genealogy))) if self.is_leaf else ""}\n{"".join(node.__str__(next_line_genealogy, next_cumul, len(self.branches)-n) for n, node in enumerate(self.branches.values(), 1))}"
+        return f"{genealogy}|\
+                {("__" + self.value) if self.value else ""}\
+                {(" *[" + next_cumul + "]" + ("" if self.branches else ("\n" + next_line_genealogy))) if self.is_leaf else ""}\n\
+                {"".join(node.__str__(next_line_genealogy, next_cumul, len(self.branches)-n)
+                   for n, node in enumerate(self.branches.values(), start=1))}"
 
 
 # ==================================================== #
