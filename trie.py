@@ -14,12 +14,12 @@ class _Node:
             self.branches[key[0]].extend(key[1:])
 
     def contains(self, key:str) -> bool:
-        if key[0] == self.value:
-            if len(key) > 1:
-                if key[1] in self.branches:
-                    return self.branches[key[1]].contains(key[1:])
-                return False
+        if key[0] != self.value:
+            return False
+        if len(key) < 2:
             return True
+        if key[1] in self.branches:
+            return self.branches[key[1]].contains(key[1:])
         return False
     
     def leaf(self, key:str) -> TNode:
@@ -51,25 +51,3 @@ class Trie:
                 self.head[key[0]] = _Node(key[0])
                 if len(key) > 1:
                     self.head[key[0]].extend(key[1:])
-            
-
-# ==================================================== #
-#                       TESTS                          #
-# ==================================================== #
-if __name__ == "__main__":
-    trie = Trie()
-
-    to_add_keys_list = [
-        "à", "arbre", "art", "artiste",
-        "chape", "chapeau", "créatif",
-        "création", "œuf", "zèbre"
-    ]
-    for key in to_add_keys_list:
-        trie.add(key)
-
-    others_keys = ["Bonjour", "Aurevoir", "Pomme"]
-    
-    for key in others_keys:
-        print(f"L'arbre trie contient le mot {key}: {trie.contains(key)}")
-    for key in to_add_keys_list:
-        print(f"L'arbre trie contient le mot {key}: {trie.contains(key)}")
